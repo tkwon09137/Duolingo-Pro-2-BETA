@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         Duolingo Pro BETA Preview
+// @name         Duolingo Pro BETA Eclipse Edit Ver.
 // @namespace    Violentmonkey Scripts
-// @version      2.0-BETA-9.6.4
+// @version      2.0-BETA-9.6.3
 // @description  Duolingo Auto Solver Tool - Working April 2024
 // @author       anonymoushackerIV (https://github.com/anonymoushackerIV)
 // @match        https://*.duolingo.com/*
@@ -63,6 +63,8 @@ if (!isNaN(Number(sessionStorage.getItem('duopro.autoSolveSessionCompleteAmount'
 
 let duoproForeverTotalQuestions = 0;
 let duoproForeverTotalLessons = 0;
+let duoproSessionXPs = 0;
+let duoproForeverTotalXPs = 0;
 let TATJxnLggmiGvbDm = localStorage.getItem("duopro.forever.userStatistics");
 if (TATJxnLggmiGvbDm) {
     let BDxfDivqDbLuJooi = JSON.parse(TATJxnLggmiGvbDm);
@@ -72,10 +74,16 @@ if (TATJxnLggmiGvbDm) {
     if (!isNaN(BDxfDivqDbLuJooi.lesson)) {
         duoproForeverTotalLessons = BDxfDivqDbLuJooi.lesson;
     }
+    if (!isNaN(BDxfDivqDbLuJooi.sessionXP)) {
+        duoproSessionXPs = BDxfDivqDbLuJooi.sessionXP;
+    }
+    if (!isNaN(BDxfDivqDbLuJooi.lifeTimeXP)) {
+        duoproForeverTotalXPs = BDxfDivqDbLuJooi.duoproForeverTotalXPs;
 }
 duoproForeverTotalQuestions = duoproForeverTotalQuestions || 0;
 duoproForeverTotalLessons = duoproForeverTotalLessons || 0;
-
+duoproForeverTotalXPs = duoproForeverTotalXPs || 0;
+duoproSessionXPs = duoproSessionXPs || 0;
 
 let ProBlockBannerOneVisible = false;
 if (JSON.parse(localStorage.getItem('ProBlockBannerOneVisible')) === null) {
@@ -88,6 +96,7 @@ if (JSON.parse(localStorage.getItem('ProBlockBannerOneVisible')) === null) {
 let autoSolverBoxPracticeOnlyMode;
 let autoSolverBoxRepeatLessonMode;
 let autoSolverBoxListeningOnlyMode;
+let autoSolverBoxLegendaryOnlyMode;
 if (JSON.parse(sessionStorage.getItem('autoSolverBoxPracticeOnlyMode')) === null) {
     autoSolverBoxPracticeOnlyMode = true;
 } else {
@@ -150,6 +159,7 @@ let wasDuolingoProSettingsButtonOnePressed = false;
 let AutoSolverSettingsShowPracticeOnlyModeForAutoSolverBox = true;
 let AutoSolverSettingsShowRepeatLessonModeForAutoSolverBox = true;
 let AutoSolverSettingsShowListeningOnlyModeForAutoSolverBox = true;
+let AutoSolverSettingsShowLegendaryOnlyModeForAutoSolverBox = true;
 //moved here
 
 let AutoSolverSettingsShowAutoSolverBox = true;
@@ -2695,6 +2705,10 @@ const DuolingoProSettingsBoxHTML = `
                         <p class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);">Lessons Solved:</p>
                         <p id="WuLExbHJuqjJkLpE" class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);">NaN</p>
                     </div>
+                    <div style="display: flex; align-items: center; gap: 8px; align-self: stretch;">
+                        <p class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);">XPs Earned:</p>
+                        <p id="#eIDFBcIejdfhQjdM" class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);">NaN</p>
+                    </div>
                 </div>
 
                 <div style="display: flex; padding: 16px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px; align-self: stretch; border-radius: 8px; border: 2px solid rgba(0, 122, 255, 0.10); background: rgba(0, 122, 255, 0.10);">
@@ -2707,7 +2721,7 @@ const DuolingoProSettingsBoxHTML = `
                             <path d="M9 16.6172C4.47656 16.6172 0.75 12.8906 0.75 8.35938C0.75 3.83594 4.46875 0.109375 9 0.109375C13.5234 0.109375 17.25 3.83594 17.25 8.35938C17.25 12.8906 13.5312 16.6172 9 16.6172ZM8.99219 5.86719C9.65625 5.86719 10.2031 5.3125 10.2031 4.64844C10.2031 3.96094 9.65625 3.42188 8.99219 3.42188C8.32031 3.42188 7.76562 3.96094 7.76562 4.64844C7.76562 5.3125 8.32031 5.86719 8.99219 5.86719ZM7.52344 12.8125H10.8438C11.2734 12.8125 11.6094 12.5156 11.6094 12.0703C11.6094 11.6562 11.2734 11.3281 10.8438 11.3281H10.1094V7.95312C10.1094 7.36719 9.82031 6.99219 9.27344 6.99219H7.67969C7.25 6.99219 6.91406 7.32031 6.91406 7.72656C6.91406 8.16406 7.25 8.47656 7.67969 8.47656H8.42969V11.3281H7.52344C7.09375 11.3281 6.75781 11.6562 6.75781 12.0703C6.75781 12.5156 7.09375 12.8125 7.52344 12.8125Z" fill="#007AFF"/>
                         </svg>
                     </div>
-                    <p class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);"><a href="https://github.com/anonymoushackerIV" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">anonymoushackerIV</a>, <a href="https://github.com/surebrec" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">surebrec</a>, <a href="https://github.com/ByThon1" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">ByThon1</a>, <a href="https://github.com/SicariusBlack" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">SicariusBlack</a>, <a href="https://github.com/fakeduo" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">fakeduo</a>, <a href="https://github.com/JxxIT" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">JxxIT</a>, <a href="https://github.com/tkwon09137" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">tkwon09137</a></p>
+                    <p class="paragraphText noSelect" style="align-self: stretch; color: rgba(0, 122, 255, 0.50);"><a href="https://github.com/anonymoushackerIV" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">anonymoushackerIV</a>, <a href="https://github.com/tkwon09137" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">Eclipse</a>, <a href="https://github.com/ByThon1" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">ByThon1</a>, <a href="https://github.com/surebrec" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">surebrec</a>, <a href="https://github.com/SicariusBlack" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">SicariusBlack</a>, <a href="https://github.com/fakeduo" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">fakeduo</a>, <a href="https://github.com/JxxIT" target="_blank" rel="noopener noreferrer" class="DuolingoProSettingsBoxContributorsLink">JxxIT</a></p>
                 </div>
 
             </div>
@@ -2936,6 +2950,8 @@ function injectDuolingoProSettingsBox() {
 
             document.querySelector('#eASGBnBrCZmjwbBq').textContent = String(duoproForeverTotalQuestions);
             document.querySelector('#WuLExbHJuqjJkLpE').textContent = String(duoproForeverTotalLessons);
+            document.querySelector('#eIDFBcIejdfhQjdM').textContent = String(duoproForeverTotalXPs);
+            document.querySelector('#NjefndKjhejdkQkl').textContent = String(duoproSessionXPs);
 
             const DuolingoProSettingsBoxToggleT1ID1 = document.querySelector('#DuolingoProSettingsBoxToggleT1ID1');
             DuolingoProSettingsBoxToggleT1ID1.addEventListener('click', () => {
